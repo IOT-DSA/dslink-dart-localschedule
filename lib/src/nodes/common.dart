@@ -33,11 +33,14 @@ class RemoveAction extends SimpleNode {
     r'$invokable': 'write',
   };
 
-  RemoveAction(String path) : super(path);
+  final LinkProvider _link;
+  RemoveAction(String path, this._link) : super(path);
 
   @override
   void onInvoke(Map<String, dynamic> _) {
     RemoveNode(provider, parent);
+
+    _link.save();
   }
 }
 
@@ -50,4 +53,19 @@ void RemoveNode(SimpleNodeProvider provider, SimpleNode node) {
   }
 
   provider.removeNode(node.path, recurse: false);
+}
+
+dynamic parseInputValue(input) {
+  if (input is! String) return input;
+
+  var lowerTrimmed = input.trim().toLowerCase();
+
+  if (lowerTrimmed == "true" || lowerTrimmed == "false") {
+    return lowerTrimmed == "true";
+  }
+
+  var number = num.parse(input, (source) => null);
+  if (number != null) return number;
+
+  return input;
 }

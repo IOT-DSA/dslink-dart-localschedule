@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:dslink/dslink.dart';
 
 import 'package:dslink_schedule/schedule.dart';
-import 'package:dslink_schedule/utils.dart' show parseInputValue;
 import 'package:dslink_schedule/models/timerange.dart';
 
 import 'common.dart';

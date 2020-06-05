@@ -2,9 +2,11 @@
 
 A DSLink for Scheduling Values.
 
-**Note:** This version is currently a transition build from the previous implementation
-to a new underlying engine and forward facing node tree. Little information will be documented
-about the legacy interface, and hopefully in the future it will go away.
+**Note:** This DSLink replaces a [former Schedule Link](https://github.com/iot-dsa/dslink-dart-schedule). This is being
+shipped as a totally separate DSLink as there is no backward compatibility between this version and the original.
+The original link contained too many issues, and had no clear specification, and as such any changes to stabilize
+the previous link would have resulted in breaking changes. To prevent anyone from inadvertently updating to a version
+that may break, the decision was made to archive the old link and establish a new one. 
 
 ## Schedules
 
