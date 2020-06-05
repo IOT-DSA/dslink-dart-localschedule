@@ -7,6 +7,13 @@
     "dart": ">=1.13.0"
   },
   "getDependencies": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IOT-DSA/dslink-dart-localschedule"
+  },
+  "bugs": {
+    "url": "https://github.com/IOT-DSA/dslink-dart-localschedule/issues"
+  },
   "configs": {
     "broker": {
       "type": "url"
