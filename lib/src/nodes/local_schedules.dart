@@ -11,7 +11,6 @@ import 'package:dslink/utils.dart';
 import 'package:dslink_schedule/utils.dart';
 import 'package:dslink_schedule/calendar.dart';
 import "package:dslink_schedule/ical.dart" as ical;
-import 'package:dslink_schedule/utils.dart';
 
 import 'timezone.dart';
 import 'event.dart';
@@ -496,9 +495,9 @@ class ICalendarLocalSchedule extends SimpleNode {
             duration = duration.abs();
           }
 
-          provider.updateValue("${path}/stc", duration.inSeconds);
+          provider.updateValue("${path}/$_stc", duration.inSeconds);
         } else {
-          provider.updateValue("${path}/stc", 0);
+          provider.updateValue("${path}/$_stc", 0);
         }
       });
 
