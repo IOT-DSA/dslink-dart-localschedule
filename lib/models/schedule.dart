@@ -81,7 +81,7 @@ class Schedule {
     // Check if it should become active right now.
     var now = new DateTime.now();
     if (e.timeRange.includes(now)) {
-      _setCurrent(getPriority(current, e));
+      _setCurrent(getPriority(e, current));
       isSet = true; // Prevent redundant setting timer.
     }
 
@@ -147,38 +147,17 @@ class Schedule {
 
     var now = new DateTime.now();
     current = e;
+    if (current == next) next = null;
     // If null then send the defaultValue
     if (e == null) {
       _controller.add(defaultValue);
     } else {
       _controller.add(e.value);
-      _checkActive(e);
     }
 
     if (_timer != null && _timer.isActive) _timer.cancel();
 
-    var nextTs = getNextTs();
-    if (e == null) {
-      if (nextTs == null) { next = null; return; }
-
-      // No current Event, create timer until next event.
-      _timer = new Timer(nextTs.difference(now), _timerEnd);
-      _isEnd = false;
-      return;
-    }
-
-    var dur = e.timeRange.remaining(now) ?? e.timeRange.period;
-    var end = now.add(dur);
-    // no more events after this currently, so start timer until the end
-    // of the current period.
-    if (nextTs == null || nextTs.isAfter(end)) {
-      _timer = new Timer(dur, _timerEnd);
-      _isEnd = true;
-    } else {
-      // Next timeStamp is before end of current.
-      _timer = new Timer(nextTs.difference(now), _timerEnd);
-      _isEnd = false;
-    }
+    _setTimer(now);
   }
 
   // Returns the DateTime stamp of the next event. This also has a side effect
@@ -193,7 +172,7 @@ class Schedule {
     if (!_hasChanged && !isSpecial) {
       var nNextTs = next?.timeRange?.nextTs(moment);
       if (nNextTs != null && getSpecialOn(nNextTs) == -1)
-        return next?.timeRange?.nextTs(moment);
+        return nNextTs;
     }
 
     next = null;
@@ -211,8 +190,24 @@ class Schedule {
     var nextTs = n.timeRange.nextTs(moment);
     if (nextTs == null) return null;
 
+    var active = _getActiveAt(moment);
+
     // Not a special day today. Just get the next event.
     if (!isSpecial) {
+
+      var priority = getPriority(n, active);
+      if (active == priority) {
+        if (active.timeRange.includes(nextTs)) {
+          var dur = active.timeRange.remaining(nextTs);
+          var end = nextTs.add(dur);
+          if (n.timeRange.includes(end)) {
+            next = n;
+            _hasChanged = false;
+            return end;
+          }
+        }
+      }
+
       // Make sure next event is today, or is special itself.
       if (sameDayOfYear(moment, nextTs) || n.isSpecial) {
         next = n;
@@ -271,8 +266,7 @@ class Schedule {
 
     var nextTs = getNextTs();
     if (current == null) {
-      // no timer to set.
-      if (nextTs == null) return;
+      if (nextTs == null) return; // no timer to set.
 
       // Beginning of next.
       _isEnd = false;
@@ -281,9 +275,24 @@ class Schedule {
     }
 
     var endDur = current.timeRange.remaining(now);
-    if (nextTs == null) {
+    if (endDur == null) {
+      // With "moment" events or rare circumstances where duration is null,
+      // we want to provide a heartbeat time. Since we only offer per-second
+      // resolution, we allow a 50 ms sleep.
+      endDur = const Duration(milliseconds: 50);
+    }
+    // Spec indicates that next should trigger if same or higher priority
+    var highestPriority = getPriority(next, current);
+    if (nextTs == null || highestPriority == current) {
       // End timer for existing
       _isEnd = true;
+      var endTime = now.add(endDur);
+      var active = _getActiveAt(endTime);
+      if (active != null) {
+        next = active;
+        _isEnd = false;
+      }
+
       _timer = new Timer(endDur, _timerEnd);
       return;
     }
@@ -317,7 +326,9 @@ class Schedule {
   // event.
   void _timerEnd() {
     // Check and see if any events should be removed from active.
-    _active.removeWhere((Event e) => e.timeRange.nextTs() == null);
+    var now = new DateTime.now();
+    _active.removeWhere((Event e) =>
+        (e.timeRange.nextTs() == null && !e.timeRange.includes(now)));
     _hasChanged = true;
 
     // Set back to default.
@@ -327,23 +338,17 @@ class Schedule {
     }
 
     if (next == null) {
+      var active = _getActiveAt(now);
       var nextTs = getNextTs();
-      if (nextTs == null) return;
+      if (active != null) {
+        next = active;
+        _isEnd = true;
+      } else if (nextTs == null) {
+        return;
+      }
     }
 
     _setCurrent(next);
-  }
-
-  /// Remove the specified [Event] from the currently active Events, if
-  /// appropriate, reinsert it into the correct place.
-  void _checkActive(Event e) {
-    var nextTs = e.timeRange.nextTs();
-    _active.remove(e);
-    // Should not have anymore instances, just remove it.
-    if (e.timeRange.frequency == Frequency.Single || nextTs == null) return;
-
-    var ind = getTsIndex(_active, nextTs);
-    _active.insert(ind, e);
   }
 
   /// Check if there is a special event on the specified date. Returns the index
@@ -370,6 +375,17 @@ class Schedule {
     if (current?.id == e.id) {
       _controller.add(value);
     }
+  }
+
+  Event _getActiveAt(DateTime time) {
+    Event active;
+    for (var e in _active) {
+      if (e.timeRange.includes(time.add(const Duration(milliseconds: 100)))) {
+        active = getPriority(active, e);
+      }
+    }
+
+    return active;
   }
 }
 

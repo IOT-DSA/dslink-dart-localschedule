@@ -1,5 +1,11 @@
 # ChangeLog
 
+## 2.0.1
+
+### Bug Fixes
+
+* Resolved, and defined, behaviour for two overlapping events.
+
 ## 2.0.0
 
 ### Features
