@@ -235,7 +235,7 @@ class TimeRange {
     // Remove 100ms from current time to help account for timer being off
     // by a few ms.
     if (isNow) {
-      moment = new DateTime.now().subtract(const Duration(milliseconds: 100));
+      moment = new DateTime.now();//.subtract(const Duration(milliseconds: 100));
     }
 
     if (_nextTs != null && _nextTs.isAfter(moment)) return _nextTs;

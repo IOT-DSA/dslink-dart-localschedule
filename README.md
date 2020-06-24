@@ -112,10 +112,21 @@ then the regular event will take place from Sunday - Tuesday at 11:59:59pm, and 
 
 ## Priority
 
-Each event may have a priority. By default an event has a priority `0` which indicates signifies _no priority specified_
+Each event may have a priority. By default an event has a priority `0` which indicates signifies _no priority specified_.
 Following that: `1` is considered the highest priority and `9` is considered the lowest priority. A special event will
 always take precedence over a priority 1, even if the special event has a priority of 9. However special events of
 different priorities should follow expected behaviours.
+
+If two events have times that overlap, and the second event has equal or higher priority than the first, then the second
+event will fire at it's starting time. If the first event has priority, the second event will start at the end of the
+first event.
+
+This means if you have an event that starts at 9h00-17h00, and add a second event of equal priority between 12h00-13h00
+then the schedule will behave as expected adjust to the second event during the lunch period, then revert back to the
+original event until its completion.
+ 
+At this time, the behaviour when there are 3 or more simultaneous events, is currently undefined and may not result in
+the expected behaviour when changing from one event to another. This functionality may be extended in the future.
 
 ## Import/Export
 
