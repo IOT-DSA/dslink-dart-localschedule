@@ -137,5 +137,11 @@ that schedule instead. If the schedule does not exist, or you supply an alternat
 schedule or update the alternative name provided.
 By default, the update will __not__ overwrite any existing events (as matched by Event ID). When overwrite is false,
 any conflicts will be discarded and if the defaultValue has changed, it will not be updated. Only new events will be 
-added. If overwrite is set to true, the defaultValue will be updated and any events with a matching ID will be 
+added. 
+
+If overwrite is set to true, the defaultValue will be updated and any events with a matching ID will be 
 overwritten with the imported version.
+
+Regardless of the `overwrite` value, events are never removed from a schedule during an import of a schedule. If you
+wish to fully reset a schedule (and drop any events that are not included in the import), the best option is to either
+manually remove the events individually, or delete the entire schedule, and import the schedule as a fresh instance.
