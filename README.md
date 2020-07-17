@@ -91,7 +91,7 @@ Examples:
     * `dateRange` = `2020-04-01T12:00:00.000/2020-04-30T13:00:00.000`
     * `timeRange` = `2020-04-01T12:00:00.000/2020-04-01T13:00:00.000`
     * `frequency` = `Daily`
-4. A weekly event from Monday 8am - Friday 5pm each week (note: This is not daily, so it is one event that takes place overnight as well)
+4. A weekly event from Monday 8am - Friday 5pm each week (note: This is not daily, so it is one inclusive, continuous event, not 5 separate 9 hour events) )
     * `dateRange` = `2020-03-30T08:00:00.000/2020-05-01T17:00:00.000`
     * `timeRange` = `2020-03-30T08:00:00.000/2020-04-03T17:00:00.000`
     * `frequency` = `Weekly`
