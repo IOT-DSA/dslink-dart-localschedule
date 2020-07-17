@@ -1,5 +1,11 @@
 # ChangeLog
 
+## 2.0.2
+
+### Features
+
+* Add Event actions all return the newly created Event ID.
+
 ## 2.0.1
 
 ### Bug Fixes

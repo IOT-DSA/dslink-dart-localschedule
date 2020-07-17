@@ -16,6 +16,7 @@ class AddSingleEvent extends ScheduleChild {
   static const String _dateRange = 'dateRange';
   static const String _isSpecial = 'isSpecial';
   static const String _priority = 'priority';
+  static const String _eventId = 'eventId';
 
   static Map<String, dynamic> def() => {
     r'$name': 'Add Event',
@@ -54,14 +55,25 @@ class AddSingleEvent extends ScheduleChild {
         'default': 0,
         'description': 'Event priority. 0 is none specified; 1 is highest; 9 is lowest.'
       }
-    ]
+    ],
+    r'$columns': [ {'name': _eventId, 'type': 'string'} ]
   };
 
   final LinkProvider _link;
   AddSingleEvent(String path, this._link) : super(path);
 
   @override
-  void onInvoke(Map<String, dynamic> params) {
+  void onCreated() {
+    // Upgrade action to return column
+    if (this.configs[r'$columns'] == null) {
+      configs[r'$columns'] = [ {'name': _eventId, 'type': 'string'} ];
+    }
+  }
+
+  @override
+  Map<String, String> onInvoke(Map<String, dynamic> params) {
+    var ret = {_eventId: ''};
+
     var name = params[_name] as String;
     var sched = getSchedule();
     if (sched.schedule.events.contains((Event e) => e.name == name)) {
@@ -83,6 +95,7 @@ class AddSingleEvent extends ScheduleChild {
 
     var tr = new TimeRange.single(startDate, endDate);
     var evnt = new Event(name, tr, val, isSpecial: spec, priority: pri);
+    ret[_eventId] = evnt.id;
     sched.addEvent(evnt);
 
     var en = provider.addNode('${parent.path}/${evnt.id}', EventsNode.def(evnt)) as EventsNode;
@@ -90,6 +103,8 @@ class AddSingleEvent extends ScheduleChild {
       en.event = evnt;
     }
     _link.save();
+
+    return ret;
   }
 }
 
@@ -102,6 +117,7 @@ class AddMomentEvent extends ScheduleChild {
   static const String _name = 'name';
   static const String _priority = 'priority';
   static const String _isSpecial = 'isSpecial';
+  static const String _eventId = 'eventId';
 
   static Map<String, dynamic> def() => {
     r'$name': 'Add Moment Event',
@@ -140,7 +156,8 @@ class AddMomentEvent extends ScheduleChild {
         'default': 0,
         'description': 'Event priority. 0 is none specified; 1 is highest; 9 is lowest.'
       }
-    ]
+    ],
+    r'$columns': [ {'name': _eventId, 'type': 'string'} ]
   };
 
   final LinkProvider _link;
@@ -148,7 +165,17 @@ class AddMomentEvent extends ScheduleChild {
   AddMomentEvent(String path, this._link) : super(path);
 
   @override
-  void onInvoke(Map<String, dynamic> params) {
+  void onCreated() {
+    // Upgrade action to return column
+    if (this.configs[r'$columns'] == null) {
+      configs[r'$columns'] = [ {'name': _eventId, 'type': 'string'} ];
+    }
+  }
+
+  @override
+  Map<String, String> onInvoke(Map<String, dynamic> params) {
+    var ret = {_eventId: ''};
+
     var name = params[_name] as String;
     var sched = getSchedule();
     if (sched.schedule.events.contains((Event e) => e.name == name)) {
@@ -170,6 +197,7 @@ class AddMomentEvent extends ScheduleChild {
 
     var tr = new TimeRange.moment(date);
     var evnt = new Event(name, tr, val, isSpecial: spec, priority: pri);
+    ret[_eventId] = evnt.id;
     sched.addEvent(evnt);
 
     var en = provider.addNode('${parent.path}/${evnt.id}', EventsNode.def(evnt)) as EventsNode;
@@ -177,6 +205,8 @@ class AddMomentEvent extends ScheduleChild {
       en.event = evnt;
     }
     _link.save();
+
+    return ret;
   }
 }
 
@@ -243,12 +273,23 @@ class AddRecurringEvents extends ScheduleChild {
   static const String _priority = 'priority';
   static const String _isSpecial = 'isSpecial';
   static const String _value = 'value';
+  static const String _eventId = 'eventId';
 
   final LinkProvider _link;
   AddRecurringEvents(String path, this._link): super(path);
 
   @override
-  void onInvoke(Map<String, dynamic> params) {
+  void onCreated() {
+    // Upgrade action to return column
+    if (this.configs[r'$columns'] == null) {
+      configs[r'$columns'] = [ {'name': _eventId, 'type': 'string'} ];
+    }
+  }
+
+  @override
+  Map<String, String> onInvoke(Map<String, dynamic> params) {
+    var ret = {'name': _eventId, 'type': 'string'};
+
     var name = params[_name] as String;
     var sched = getSchedule();
     if (sched.schedule.events.contains((Event e) => e.name == name)) {
@@ -294,6 +335,7 @@ class AddRecurringEvents extends ScheduleChild {
     var pri = params[_priority] ?? 0;
     
     var evnt = new Event(name, tr, val, isSpecial: spec, priority: pri);
+    ret[_eventId] = evnt.id;
     sched.addEvent(evnt);
 
     var en = provider.addNode('${parent.path}/${evnt.id}', EventsNode.def(evnt)) as EventsNode;
@@ -302,6 +344,8 @@ class AddRecurringEvents extends ScheduleChild {
     }
 
     _link.save();
+
+    return ret;
   }
 }
 
