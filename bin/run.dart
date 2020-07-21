@@ -35,8 +35,20 @@ Future<Null> main(List<String> args) async {
   defaultNodes: {
     AddSchedule.pathName: AddSchedule.def(),
     ImportSchedule.pathName: ImportSchedule.def(),
+    DataRootNode.pathName: DataRootNode.def()
   }, autoInitialize: false);
 
   link.init();
+
+  _addMissing(link, "/${DataRootNode.pathName}", DataRootNode.def());
+
   link.connect();
+}
+
+void _addMissing(LinkProvider link, String path, Map<String, dynamic> map) {
+  var provider = link.provider as SimpleNodeProvider;
+  var nd = provider.getNode(path);
+  if (nd == null) {
+    link.addNode(path, map);
+  }
 }
