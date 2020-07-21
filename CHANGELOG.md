@@ -1,5 +1,12 @@
 # ChangeLog
 
+## 2.0.3
+
+### Bug Fixes
+
+* Restore `data` node under the root of the link. This replaces the broker's data node with one that will keep the
+data with the DSLink configuration rather than at broker level. 
+
 ## 2.0.2
 
 ### Features
