@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 
-import 'package:dslink_schedule/models/timerange.dart';
+import 'package:dslink_localschedule/models/timerange.dart';
 
 final DaylightSavings = new DateTime(2020, 3, 8, 2);
 
