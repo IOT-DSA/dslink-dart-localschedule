@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:dslink/dslink.dart';
 
-import 'package:dslink_schedule/schedule.dart';
-import 'package:dslink_schedule/models/timerange.dart';
+import 'package:dslink_localschedule/schedule.dart';
+import 'package:dslink_localschedule/models/timerange.dart';
 
 import 'common.dart';
 

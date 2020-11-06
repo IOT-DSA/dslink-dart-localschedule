@@ -2,7 +2,7 @@ import 'dart:async';
 
 import "package:dslink/dslink.dart";
 
-import 'package:dslink_schedule/nodes.dart';
+import 'package:dslink_localschedule/nodes.dart';
 
 Future<Null> main(List<String> args) async {
   LinkProvider link;

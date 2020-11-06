@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 
-import 'package:dslink_schedule/models/event.dart';
-import 'package:dslink_schedule/models/timerange.dart';
+import 'package:dslink_localschedule/models/event.dart';
+import 'package:dslink_localschedule/models/timerange.dart';
 
 void main() {
   test('Constructor', event_constructor);

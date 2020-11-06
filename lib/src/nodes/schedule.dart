@@ -5,8 +5,8 @@ import 'package:dslink/dslink.dart';
 import 'package:dslink/nodes.dart' show NodeNamer;
 import 'package:dslink/utils.dart' show logger;
 
-import 'package:dslink_schedule/utils.dart';
-import 'package:dslink_schedule/schedule.dart';
+import 'package:dslink_localschedule/utils.dart';
+import 'package:dslink_localschedule/schedule.dart';
 
 import 'events.dart';
 import 'common.dart';
